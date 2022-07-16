@@ -25,5 +25,5 @@ def get_list_videos(path,dataset_name):
             path_list.append(video_path)
 
 
-    return pd.DataFrame({"video path":path_list,
+    return pd.DataFrame({"video_path":path_list,
                          "dataset":[dataset_name]*len(path_list)})
