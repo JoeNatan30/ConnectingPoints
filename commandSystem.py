@@ -24,7 +24,7 @@ def show_options(options, name):
     print(f"Choose {name}: (by number)\n")
 
     for pos, opt in enumerate(options):
-        print(f'{pos}) {opt}')
+        print(f'{pos+1}) {opt}')
 
 def select_datasets():
 
@@ -34,13 +34,13 @@ def select_datasets():
     options = [opt for opt in options if len(opt.split('.'))==1]
 
     # dictionary of selected options
-    chosen = {str(pos):False for pos in range(len(options))}
+    chosen = {str(pos+1):False for pos in range(len(options))}
 
     while(True):
 
         show_options(options, 'datasets')
 
-        print(f'\n{len(options)}) continue\n')
+        print(f'\n{len(options)+1}) continue\n')
 
         chosen_names = get_selected_option_names(options,chosen)
         
@@ -48,7 +48,7 @@ def select_datasets():
 
         ans = input("write an option: ")
 
-        if ans == str(len(options)):
+        if ans == str(len(options)+1):
             return chosen_names
 
         if ans not in chosen.keys():
@@ -64,13 +64,13 @@ def select_keypoint_estimator():
     options = [opt.split('_')[0] for opt in options if opt.split('.')[-1]=='py']
 
     # dictionary of selected options
-    chosen = {str(pos):False for pos in range(len(options))}
+    chosen = {str(pos+1):False for pos in range(len(options))}
 
     while(True):
 
         show_options(options, 'keypoint estimators')
 
-        print(f'\n{len(options)}) continue\n')
+        print(f'\n{len(options)+1}) continue\n')
 
         chosen_names = get_selected_option_names(options,chosen)
         
@@ -78,7 +78,7 @@ def select_keypoint_estimator():
 
         ans = input("write an option: ")
 
-        if ans == str(len(options)):
+        if ans == str(len(options)+1):
             return chosen_names
 
         if ans not in chosen.keys():
