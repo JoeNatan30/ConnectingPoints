@@ -8,17 +8,21 @@ import cv2
 
 # Local imports
 
-def model_init(static_image_mode = True, ):
+def model_init(static_image_mode=True, model_complexity=2,
+               min_detection_confidence=0.5, min_tracking_confidence=0.5):
 
     mp_holistic = mp.solutions.holistic
     holistic = mp_holistic.Holistic(
         static_image_mode= static_image_mode,
-        model_complexity=2,
-        min_detection_confidence=0.5,
-        min_tracking_confidence=0.5)
+        model_complexity=model_complexity,
+        min_detection_confidence=min_detection_confidence,
+        min_tracking_confidence=min_tracking_confidence)
 
-    print("init MediaPipe model - Done")
     return holistic
+
+def format_model_output(model_output):
+    #print("format!")
+    return model_output
 
 def frame_process(holistic, frame):
 
@@ -70,15 +74,9 @@ def frame_process(holistic, frame):
         kpDict["face"] = [[0.0, 0.0] for point in range(0, 468)]
     kpDict["face"] = np.asarray(kpDict["face"])
 
-    print("frame_process")
-    return kpDict
+    data = format_model_output(kpDict)
 
-'''
-model = model_init()
-cap = cv2.VideoCapture(os.getcwd()+'/datasets/???_18.mp4')
-ret, frame = cap.read()
+    holistic.close()
 
-frame_kp = frame_process(model, frame)
-print(frame_kp)
-model.close()
-'''
+    return data
+

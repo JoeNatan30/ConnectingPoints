@@ -10,8 +10,8 @@ import math
 import cv2
 
 # Local imports
-from models.wholepose.config import cfg
-from models.wholepose.pose_hrnet import get_pose_net
+from keypointEstimators.models.wholepose.config import cfg
+from keypointEstimators.models.wholepose.pose_hrnet import get_pose_net
 
 
 def pose_process(coords, hms):
@@ -74,7 +74,7 @@ def merge_hm(hms_list):
     return hm
 
 def model_init():
-    print("loading wholepose model...")
+
     config = 'keypointEstimators/models/wholepose/wholebody_w48_384x288.yaml'
     cfg.merge_from_file(config)
 
@@ -98,13 +98,25 @@ def model_init():
 
     newmodel.cpu().eval()
 
-    print("Done")
     return newmodel
 
 def frame_process(wholepose, frame):
 
     multi_scales = [512,640]
+    
     frame_height, frame_width = frame.shape[:2]
+    
+    maxSize = min(frame_width, frame_height)
+
+    if maxSize < 256 or maxSize < 512 - 256/2:
+        frame_height = 256
+        frame_width = 256
+    else:
+        frame_height = 512
+        frame_width = 512
+    
+    frame = cv2.resize(frame, (frame_height,frame_width))
+
     out = []
 
     for scale in multi_scales:
@@ -140,14 +152,3 @@ def frame_process(wholepose, frame):
     
     return pred[:,:2]/256
     
-
-'''
-model = model_init()
-cap = cv2.VideoCapture(os.getcwd()+'/datasets/???_18.mp4')
-ret, frame = cap.read()
-frame = cv2.resize(frame, (256,256))
-frame = cv2.flip(frame, flipCode=1)
-frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-frame_kp = frame_process(model, frame)
-print(frame_kp)
-'''
