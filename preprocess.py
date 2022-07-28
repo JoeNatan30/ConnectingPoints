@@ -14,7 +14,6 @@ import commandSystem as cs
 from datasetVideoReader import AEC_videoReader, PUCP_videoReader, WASL_videoReader
 from keypointEstimators import mediapipe_functions, openpose_functions, wholepose_functions
 
-
 def get_videoReader_data(videoReader):
     return videoReader.get_data()
 
@@ -72,6 +71,7 @@ def get_keypoint_from_estimator(path, label, kpoint_est_opt):
     
     results = [v for k, v in results.items() if v != []]
     results.append(label)
+
     return results
 
 def partial_save(output, partial_output_name, kpoint_est_opt):
@@ -116,6 +116,4 @@ data = get_datasets_data(dataset_opt)
 
 kpoint_est_opt = cs.select_keypoint_estimator()
 nani = get_keypoint_estimator_standarized_output(kpoint_est_opt, data, '-'.join(dataset_opt))
-
-
 
