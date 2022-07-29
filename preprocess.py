@@ -37,6 +37,7 @@ def get_keypoint_estimation_data(keypoint_estimator, frame):
         warnings.warn("deprecated", DeprecationWarning)
         model = keypoint_estimator.model_init()
         frame_kp = keypoint_estimator.frame_process(model, frame)
+
     return frame_kp
 
 def get_keypoint_from_estimator(path, label, kpoint_est_opt):
@@ -71,6 +72,7 @@ def get_keypoint_from_estimator(path, label, kpoint_est_opt):
     
     results = [v for k, v in results.items() if v != []]
     results.append(label)
+    results.append(path.split(os.sep)[-1])
 
     return results
 
@@ -89,7 +91,7 @@ def partial_save(output, partial_output_name, kpoint_est_opt):
 def get_keypoint_estimator_standarized_output(kpoint_est_opt, data, partial_output_name):
  
     my_array = np.arange(len(data))
-    n = 100
+    n = 4
 
     workers = 4 #os.cpu_count()
 
@@ -101,7 +103,8 @@ def get_keypoint_estimator_standarized_output(kpoint_est_opt, data, partial_outp
 
         p = Pool(workers)
         kp_list = p.starmap(get_keypoint_from_estimator, zip(split['video_path'],split['label'], repeat(kpoint_est_opt)))
-        kp_list = pd.DataFrame(kp_list, columns=kpoint_est_opt + ["label"])
+        kp_list = pd.DataFrame(kp_list, columns=kpoint_est_opt + ["label"] + ["video_name"])
+        print(kp_list)
         acum.append(kp_list)
 
         output = pd.concat(acum, ignore_index=True)
