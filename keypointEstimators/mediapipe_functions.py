@@ -8,15 +8,14 @@ import cv2
 
 # Local imports
 
-def model_init(static_image_mode=True, model_complexity=2,
-               min_detection_confidence=0.5, min_tracking_confidence=0.5):
+def model_init(static_image_mode=True, min_detection_confidence=0.5, min_tracking_confidence=0.5):
 
     mp_holistic = mp.solutions.holistic
-    holistic = mp_holistic.Holistic(
-        static_image_mode= static_image_mode,
-        model_complexity=model_complexity,
-        min_detection_confidence=min_detection_confidence,
-        min_tracking_confidence=min_tracking_confidence)
+    holistic = mp_holistic.Holistic()
+    #holistic = mp_holistic.Holistic(
+    #    static_image_mode= static_image_mode,
+    #    min_detection_confidence=min_detection_confidence,
+    #    min_tracking_confidence=min_tracking_confidence)
 
     return holistic
 
