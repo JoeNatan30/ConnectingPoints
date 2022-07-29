@@ -82,9 +82,10 @@ def partial_save(output, partial_output_name, kpoint_est_opt):
 
         name = '--'.join([partial_output_name, estimator])
         to_save = pd.DataFrame({'data':list(output[estimator]),
-                                'label':list(output['label'])})
+                                'label':list(output['label']),
+                                'video_name':list(output['video_name'])})
 
-        to_save.to_json('./output/'+name+'.json')
+        to_save.to_pickle('./output/'+name+'.pk')
         #rn = pd.read_json('./output/'+name+'.json')
         #print(rn)
 
