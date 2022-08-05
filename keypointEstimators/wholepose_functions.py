@@ -96,7 +96,7 @@ def model_init():
         new_state_dict[name] = v
     newmodel.load_state_dict(new_state_dict)
 
-    newmodel.cpu().eval()
+    newmodel.cuda().eval()
 
     return newmodel
 
@@ -125,7 +125,7 @@ def frame_process(wholepose, frame):
         else:
             img_temp = frame
         img_temp = stack_flip(img_temp)
-        img_temp = norm_numpy_totensor(img_temp).cpu()
+        img_temp = norm_numpy_totensor(img_temp).cuda()
         hms = wholepose(img_temp)
         if scale != 512:
             out.append(f.interpolate(hms, (frame_width // 4,frame_height // 4), mode='bilinear'))

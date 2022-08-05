@@ -8,6 +8,7 @@ import warnings
 import pandas as pd
 import numpy as np
 import cv2
+import time
 
 # Local imports
 import commandSystem as cs
@@ -41,7 +42,7 @@ def get_keypoint_estimation_data(keypoint_estimator, frame):
     return frame_kp
 
 def get_keypoint_from_estimator(path, label, kpoint_est_opt):
-
+    st = time.time()
     results = {"openpose": [],
                "mediapipe": [],
                "wholepose": [],
@@ -73,7 +74,9 @@ def get_keypoint_from_estimator(path, label, kpoint_est_opt):
     results = [v for k, v in results.items() if v != []]
     results.append(label)
     results.append(path.split(os.sep)[-1])
-
+    et = time.time()
+    elapsed_time = et - st
+    print('Execution time:', elapsed_time, 'seconds')
     return results
 
 def partial_save(output, partial_output_name, kpoint_est_opt):
@@ -92,9 +95,9 @@ def partial_save(output, partial_output_name, kpoint_est_opt):
 def get_keypoint_estimator_standarized_output(kpoint_est_opt, data, partial_output_name):
  
     my_array = np.arange(len(data))
-    n = 4
+    n = 100
 
-    workers = 4 #os.cpu_count()
+    workers = 1 #os.cpu_count()
 
     splited_data = np.array_split(data, range(n,len(my_array), n))
 
