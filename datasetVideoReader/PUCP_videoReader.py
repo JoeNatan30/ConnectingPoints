@@ -8,7 +8,7 @@ from datasetVideoReader.util import get_list_videos
 
 def get_data():
     
-    path = "./datasets/PUCP_PSL_DGI156/Videos/SEGMENTED_SIGN"
+    path = "./datasets/PUCP_PSL_DGI156/Videos/cropped"
     video_list = get_list_videos(path,"PUCP_PSL_DGI156")
 
     # .split('/')[-1] to take the video name of the path
