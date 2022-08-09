@@ -1,0 +1,1 @@
+gdown https://drive.google.com/uc?id=1f_c3uKTDQ4DR3CrwMSI8qdsTKJvKVt7p -O hrnet_w48_coco_wholebody_384x288-6e061c6a_20200922.pth
