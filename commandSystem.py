@@ -6,6 +6,16 @@ import os
 # Local imports
 #
 
+
+# To choose just one option
+def change_unique_option_state(chosen, ans):
+
+    chosen = {k:False for k, _ in chosen.items()}
+    chosen[ans] = True
+
+    return chosen
+
+# To choose just multiple option
 def change_options_state(chosen, ans):
 
     if chosen[ans]:
@@ -18,14 +28,16 @@ def change_options_state(chosen, ans):
 def get_selected_option_names(options,chosen):
     return [name for name, isChosed in zip(options, chosen.values()) if isChosed]
 
+#print in console the options
 def show_options(options, name):
 
     print("##################################")
     print(f"Choose {name}: (by number)\n")
 
     for pos, opt in enumerate(options):
-        print(f'{pos+1}) {opt}')
+        print(f"{pos+1}) {opt}")
 
+# To select wich dataset are in "datasets" folders
 def select_datasets():
 
     options = os.listdir("./datasets")
@@ -40,7 +52,7 @@ def select_datasets():
 
         show_options(options, 'datasets')
 
-        print(f'\n{len(options)+1}) continue\n')
+        print(f"\n{len(options)+1}) continue\n")
 
         chosen_names = get_selected_option_names(options,chosen)
         
@@ -56,7 +68,7 @@ def select_datasets():
         
         chosen = change_options_state(chosen, ans)
 
-
+# To select the desired keypoint stimator
 def select_keypoint_estimator():
     options = os.listdir("./keypointEstimators")
 
@@ -84,4 +96,4 @@ def select_keypoint_estimator():
         if ans not in chosen.keys():
             continue
 
-        chosen = change_options_state(chosen, ans)
+        chosen = change_unique_option_state(chosen, ans)

@@ -13,7 +13,24 @@ import time
 # Local imports
 import commandSystem as cs
 from datasetVideoReader import AEC_videoReader, PUCP_videoReader, WASL_videoReader
-from keypointEstimators import mediapipe_functions, openpose_functions, wholepose_functions
+
+try:
+    from keypointEstimators import mediapipe_functions
+except:
+    print("Mediapipe is not installed")
+    print("Recommendation: Use 'pip install mediapipe'")
+
+try:
+    from keypointEstimators import openpose_functions
+except:
+    print("Openpose is not installed")
+    print("Recommendation: use the 'openpose_installation.sh' file in './keypointEstimators/models' to install openpose")
+
+try:
+    from keypointEstimators import wholepose_functions
+except:
+    print("Wholepose is not installed")
+    print("Recommendation: use the 'download_model.sh' file in './keypointEstimators/models/wholepose' to download wholepose model")
 
 def get_videoReader_data(videoReader):
     return videoReader.get_data()
@@ -32,45 +49,38 @@ def get_datasets_data(dataset_opt):
 
     return pd.concat(dataset_list, ignore_index=True)
 
-def get_keypoint_estimation_data(keypoint_estimator, frame):
+def get_keypoint_estimation_data(keypoint_estimator, model, frame):
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         warnings.warn("deprecated", DeprecationWarning)
-        model = keypoint_estimator.model_init()
+        #model = keypoint_estimator.model_init()
         frame_kp = keypoint_estimator.frame_process(model, frame)
 
     return frame_kp
 
-def get_keypoint_from_estimator(path, label, kpoint_est_opt):
+def get_keypoint_from_estimator(path, label, model, kp_est_chosed, keypoint_estimator):
     st = time.time()
     results = {"openpose": [],
                "mediapipe": [],
-               "wholepose": [],
-               "label":[]}
-    
-    functions = {"openpose": openpose_functions,
-                 "mediapipe": mediapipe_functions,
-                 "wholepose": wholepose_functions}
+               "wholepose":[]}
 
     cap = cv2.VideoCapture(path)
 
     if (cap.isOpened() is False):
         print("Unable to read camera feed", path)
-        for dataset in kpoint_est_opt:
-                results[dataset].append([])
-        return results
+        results[kp_est_chosed].append([])
+        return results, True
 
     print("processing", path)
     ret, frame = cap.read()
-
+    
     while ret is True:
     
-        for dataset in kpoint_est_opt:
-            videos_df = get_keypoint_estimation_data(functions[dataset], frame)
-            results[dataset].append(videos_df)
+        videos_df = get_keypoint_estimation_data(keypoint_estimator, model, frame)
+        results[kp_est_chosed].append(videos_df)
 
         ret, frame = cap.read()
-    
+
     results = [v for k, v in results.items() if v != []]
     results.append(label)
     results.append(path.split(os.sep)[-1])
@@ -79,22 +89,29 @@ def get_keypoint_from_estimator(path, label, kpoint_est_opt):
     print('Execution time:', elapsed_time, 'seconds')
     return results
 
-def partial_save(output, partial_output_name, kpoint_est_opt):
+def partial_save(output, partial_output_name, estimator):
 
-    for estimator in kpoint_est_opt:
+    name = '--'.join([partial_output_name, estimator])
 
-        name = '--'.join([partial_output_name, estimator])
-        #to_save = pd.DataFrame({'data':list(output[estimator]),
-        #                        'label':list(output['label']),
-        #                        'video_name':list(output['video_name'])})
+    os.makedirs("./output", exist_ok=True)
+    output.to_pickle('./output/'+name+'.pk')
 
-        os.makedirs("./output", exist_ok=True)
-        output.to_pickle('./output/'+name+'.pk')
-        #rn = pd.read_json('./output/'+name+'.json')
-        #print(rn)
 
 def get_keypoint_estimator_standarized_output(kpoint_est_opt, data, partial_output_name):
+
+    # Select keypoint stimator
+    kp_est_chosed = kpoint_est_opt[0]
+    if "openpose" == kp_est_chosed:
+        keypoint_estimator = openpose_functions
+    elif "mediapipe" == kp_est_chosed:
+        keypoint_estimator = mediapipe_functions
+    elif "wholepose" == kp_est_chosed:
+        keypoint_estimator = wholepose_functions 
+    
+    # initilize the model
+    model = keypoint_estimator.model_init()
  
+    # data acumulators
     kp_acum = []
     path_acum = []
     name_acum = []
@@ -102,30 +119,41 @@ def get_keypoint_estimator_standarized_output(kpoint_est_opt, data, partial_outp
 
     num = 0
 
+    # For each video (path)
     for path, label in zip(data['video_path'], data['label']):
-        kp_list = get_keypoint_from_estimator(path, label,kpoint_est_opt)
+
+        # Where the video is processed
+        kp_list = get_keypoint_from_estimator(path, label, model, kp_est_chosed, keypoint_estimator)
+        
         num = num + 1
+        print(f"Video processed: {num}")
+        
+        # accumulate data
         kp_acum.append(kp_list)
         label_acum.append(label)
         name_acum.append(path.split(os.sep)[-1])
 
+        # Format of the output
         output = pd.DataFrame.from_dict({
             "data":  kp_acum,
-            #"path":  path_acum,
             "label": label_acum,
             "name":  name_acum,
         }, orient='index')
-        
 
-        #output = pd.concat(acum, ignore_index=True)
-        partial_save(output, partial_output_name, kpoint_est_opt)
+        partial_save(output, partial_output_name, kp_est_chosed)
 
+    # close the model (some models no need to close)
+    keypoint_estimator.close_model(model)
 
-
+#this list have this structure
+#dataset_opt = ["WLASL", "AEC", "PUCP_PSL_DGI156"]
 dataset_opt = cs.select_datasets()
-#dataset_opt = ["AEC"]#["WLASL", "AEC", "PUCP_PSL_DGI156"]
+
+# To obtain a Dataframe with videos paths, labels and video names
 data = get_datasets_data(dataset_opt)
 
+# the structure is similar than dataset_opt but it is for keypoint stimator (and just one)
 kpoint_est_opt = cs.select_keypoint_estimator()
-get_keypoint_estimator_standarized_output(kpoint_est_opt, data, '-'.join(dataset_opt))
 
+# To process the data
+get_keypoint_estimator_standarized_output(kpoint_est_opt, data, '-'.join(dataset_opt))

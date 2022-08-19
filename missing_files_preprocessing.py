@@ -14,6 +14,19 @@ import commandSystem as cs
 from datasetVideoReader import AEC_videoReader, PUCP_videoReader, WASL_videoReader
 from keypointEstimators import mediapipe_functions, openpose_functions, wholepose_functions
 
+'''
+This file is similar to preprocess.py but it will be used when something interrups preprocess.py
+
+The idea is that this script continue processing from the last video processed before the interruption.
+
+NOTE: Not yet implemented
+
+'''
+
+
+
+
+
 def get_videoReader_data(videoReader):
     return videoReader.get_data()
 
