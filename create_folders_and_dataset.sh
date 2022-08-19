@@ -1,3 +1,6 @@
+# Use this sh to have WLASL, aec and pucp dataset
+# WLASL need more process to completely have the data
+
 mkdir datasets
 
 cd datasets
