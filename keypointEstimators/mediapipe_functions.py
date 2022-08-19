@@ -23,6 +23,9 @@ def format_model_output(model_output):
     #print("format!")
     return model_output
 
+def close_model(holistic):
+    holistic.close()
+
 def frame_process(holistic, frame):
 
     imageBGR = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -74,8 +77,6 @@ def frame_process(holistic, frame):
     kpDict["face"] = np.asarray(kpDict["face"])
 
     data = format_model_output(kpDict)
-
-    holistic.close()
 
     return data
 

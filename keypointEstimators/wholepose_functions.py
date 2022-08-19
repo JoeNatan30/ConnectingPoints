@@ -100,6 +100,9 @@ def model_init():
 
     return newmodel
 
+def close_model(model):
+    return model
+
 def frame_process(wholepose, frame):
 
     multi_scales = [512,640]
