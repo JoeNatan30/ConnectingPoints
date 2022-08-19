@@ -3,11 +3,14 @@
 Repository used to unify keypoints estimators output into a single format, thus making them comparable and analysable.
 
 ## Datasets thats works:
- - AEC  (videos are taken from datasets/AEC/Videos/SEGMENTED_SIGN)
- - PUCP_PSL_DGI156 (videos are taken from datasets/PUCP_PSL_DGI156/Videos/cropped)
- - WLASL (need to download, follow the WLASL guide in [WLALS link](https://github.com/dxli94/WLASL))
+ - AEC
+ (videos are taken from datasets/AEC/Videos/SEGMENTED_SIGN)
+ - PUCP_PSL_DGI156
+ (videos are taken from datasets/PUCP_PSL_DGI156/Videos/cropped)
+ - WLASL
+ (need to download, follow the WLASL guide in [WLALS link](https://github.com/dxli94/WLASL))
 
-More information about AEC and PUCP_PSL_DGI156 in [PeruSIL](https://github.com/gissemari/PeruvianSignLanguage)
+ More information about AEC and PUCP_PSL_DGI156 in [PeruSIL](https://github.com/gissemari/PeruvianSignLanguage)
 ------
 ## Keypoint estimators available
  - Mediapipe
@@ -52,24 +55,25 @@ sh create_folders_and_dataset.sh
 remember that WLASL have additional steps
 
 ## model installation
- - Mediapipe
- this library is already installed if you follow the "prepare the enviroment" section
+ - **Mediapipe**
 
+This library is already installed if you did the "prepare the enviroment" section.
+It also be installing by running:
  ```
  pip install mediapipe
  ```
- - Wholepose
+ - **Wholepose**
 
- in keypointEstimators/models/wholepose
+ go to keypointEstimators/models/wholepose
  Run:
  ```
  sh download_model.sh
  ```
  this will download "wholebody_hrnet_w48_384x384" pretrained model of [Coco-Wholebody github](https://github.com/jin-s13/COCO-WholeBody)
 
- - OpenPose
+ - **OpenPose**
 
- in keypointEstimators/models/
+ Go to keypointEstimators/models/
 
  Run:
  ```
@@ -79,7 +83,7 @@ remember that WLASL have additional steps
 
  If you have another Nvidia architecture that not correspont with the one in cmake, please modify **cmake parameters**
 
- then add this line at the begining of the ".bashrc" (linux)
+ then add this line at the beginning of the ".bashrc" (linux)
  ```
  export CUDA_PATH=/usr/local/cuda
  export LD_LIBRARY_PATH=$CUDA_PATH/lib64:$LD_LIBRARY_PATH
