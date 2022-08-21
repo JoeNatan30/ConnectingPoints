@@ -40,7 +40,7 @@ class H5Dataset(Dataset):
         return self.meaning[_class]
 
     def generate_meaning_dict(self):
-        self.meaning = {v:k for (k,v) in enumerate(set(self.classes)) }
+        self.meaning = {v:k for (k,v) in enumerate(sorted(set(self.classes)))}
 
     def sortBySeqLength(self):
 
@@ -52,6 +52,20 @@ class H5Dataset(Dataset):
         self.seq_lengths = [self.seq_lengths[i] for i in new_order]
         self.classes = [self.classes[i] for i in new_order]
         self.videoName = [self.videoName[i] for i in new_order]
+
+    # to pad all sequence with zero
+    def fixTimestepLength(self, size=-1):
+
+        if size < 0:
+            size = max(self.seq_lengths)
+
+        seq_tensor = Variable(torch.zeros(len(self.data), size, self.data[0].shape[1], self.data[0].shape[2], ))
+        
+        for idx, (seq, seqlen) in enumerate(zip(self.data, self.seq_lengths)):
+            for pos in range(seqlen):
+                seq_tensor[idx, pos] = seq[pos]
+
+        self.data = seq_tensor
     
     def read_h5(self, path):
         
@@ -65,18 +79,19 @@ class H5Dataset(Dataset):
                 self.videoName.append(f[index]['video_name'][...].item().decode('utf-8'))
                 self.data.append(torch.from_numpy(f[index]["data"][...]))
 
-
+        # have the timestep length of all the data
         self.seq_lengths = list(map(len, self.data))
 
-        self.data = pad_sequence(self.data, batch_first=True)
+        #self.data = pad_sequence(self.data, batch_first=True)
 
-'''
-data_train = H5Dataset("output/AEC--wholepose.hdf5")
+
+data_train = H5Dataset("split/AEC--mediapipe-Val.hdf5")
+data_train.fixTimestepLength(-1)
 data_train_loader = DataLoader(data_train, batch_size=64, shuffle=True, )
 
 for sample in data_train_loader:
     
     x = sample['x']
     length = sample['length']
-
-'''
+    
+    print(x.shape)
