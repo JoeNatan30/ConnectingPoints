@@ -3,19 +3,19 @@
 Repository used to unify keypoints estimators output into a single format, thus making them comparable and analysable.
 
 ## Datasets thats works:
- - AEC
+ - **AEC**
  (videos are taken from datasets/AEC/Videos/SEGMENTED_SIGN)
- - PUCP_PSL_DGI156
+ - **PUCP_PSL_DGI156**
  (videos are taken from datasets/PUCP_PSL_DGI156/Videos/cropped)
- - WLASL
+ - **WLASL**
  (need to download, follow the WLASL guide in [WLALS link](https://github.com/dxli94/WLASL))
 
  More information about AEC and PUCP_PSL_DGI156 in [PeruSIL](https://github.com/gissemari/PeruvianSignLanguage)
 ------
 ## Keypoint estimators available
- - Mediapipe
- - Openpose
- - Wholepose
+ - **Mediapipe**
+ - **Openpose**
+ - **Wholepose**
 
 ------
  ## Output structure
