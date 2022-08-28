@@ -2,7 +2,7 @@ import os
 try:
     import pyopenpose as op
 except:
-    print("comment this 'keypointEstimators/openpose_function.py' in case the code stops here")
+    print("comment this 'keypointEstimators/openpose_function.py' in case the code stops")
 
 
 def model_init():
