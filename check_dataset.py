@@ -69,13 +69,13 @@ def check(dataset, kpModel):
         data_flat = np.array(list(data_flat))
         print(len([_ for _  in data_flat if _ > 1.0]))
 
-        check = np.where(data_flat <= 1.3, True, False)
+        check = np.where(data_flat <= 1.0, True, False)
         check = check.all()
-        assert check, "Mayor a 1.1" 
+        assert check, "Mayor a 1.0" 
 
-        check = np.where(data_flat >= -0.3, True, False)
+        check = np.where(data_flat >= 0.0, True, False)
         check = check.all()
-        assert check, "Menor que -0.1"
+        assert check, "Menor que -0.0"
 
 dataset = ["PUCP_PSL_DGI156", "AEC", "WLASL"]
 kpModel = ["wholepose"]# ["wholepose","mediapipe","openpose"]
