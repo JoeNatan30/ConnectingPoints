@@ -153,5 +153,5 @@ def frame_process(wholepose, frame):
     pred = pose_process(pred, hm)
     pred[:,:2] *= 4.0
     
-    return pred[:,:2]/256
+    return pred[:,:2]/frame_height
     
