@@ -23,6 +23,8 @@ class DataReader():
 
 
     def selectInstances(self):
+
+        initial_df = self.df.copy()
     
         set_init = set(self.df['label'])
 
@@ -36,11 +38,26 @@ class DataReader():
 
         # chosse not banned videos and filter by bannedList again
         self.df = self.df[~self.df['video_name'].isin(videoDf[0])]
-        self.df = self.df[~self.df['label'].isin(bannedList)]
+        
 
         set_final = set(self.df['label'])
+        zero_instance_list = list(set_init - set_final)
 
-        print("Words with zero values:", list(set_init - set_final))
+        print("Words with zero values:",zero_instance_list)
+
+        df_to_add = initial_df[initial_df['label'].isin(zero_instance_list)]
+
+        for unique in zero_instance_list:
+            class_data = df_to_add[df_to_add["label"]==unique]
+            to_add = class_data.sample(n = 1)
+            self.df = pd.concat([self.df, to_add])
+        
+        set_final = set(self.df['label'])
+        zero_instance_list = list(set_init - set_final)
+
+        print("Words with zero values(new):",zero_instance_list)
+        # Remove ban from csv list
+        self.df = self.df[~self.df['label'].isin(bannedList)]
 
 
     def saveData(self, indexOrder):
