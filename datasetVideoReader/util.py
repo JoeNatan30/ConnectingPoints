@@ -21,8 +21,8 @@ def get_list_videos(path,dataset_name):
         for video_name in video_names:
 
             video_path = os.sep.join([folder_path, video_name])
-            
-            path_list.append(video_path)
+
+            path_list.append(os.path.normpath(video_path))
 
 
     return pd.DataFrame({"video_path":path_list,
