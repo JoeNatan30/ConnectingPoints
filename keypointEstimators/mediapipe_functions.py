@@ -19,9 +19,27 @@ def model_init(static_image_mode=True, min_detection_confidence=0.5, min_trackin
 
     return holistic
 
-def format_model_output(model_output):
-    #print("format!")
-    return model_output
+def format_model_output(output):
+    
+    pose = output['pose']
+    face = output['face']
+    left_hand = output['left_hand']
+    right_hand = output['right_hand']
+
+    newFormat = []
+
+    newFormat.append(pose)
+    newFormat.append(face)
+    newFormat.append(left_hand)
+    newFormat.append(right_hand)
+
+    x = np.asarray([item[0] for sublist in newFormat for item in sublist])
+    y = np.asarray([item[1] for sublist in newFormat for item in sublist])
+
+    #body_location = [item for sublist in bType for item in sublist]
+    out = np.asarray([x,y])
+
+    return out
 
 def close_model(holistic):
     holistic.close()

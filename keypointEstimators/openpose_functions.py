@@ -1,4 +1,6 @@
 import os
+import numpy as np
+
 try:
     import pyopenpose as op
 except:
@@ -28,9 +30,24 @@ def model_init():
 
     return opWrapper
 
-def format_model_output(model_output):
-    #print("format!")
-    return model_output
+def format_model_output(output):
+    newFormat = []
+  
+    pose = output['pose']
+    face = output['face']
+    left_hand = output['left_hand']
+    right_hand = output['right_hand']
+
+    newFormat.append(pose)
+    newFormat.append(face)
+    newFormat.append(left_hand)
+    newFormat.append(right_hand)
+
+    x = np.asarray([item[0] for sublist in newFormat for item in sublist])
+    y = np.asarray([item[1] for sublist in newFormat for item in sublist])
+
+    out = np.asarray([x,y])
+    return out
 
 def close_model(opWrapper):
     opWrapper.stop()

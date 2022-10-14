@@ -73,6 +73,8 @@ def merge_hm(hms_list):
     hm = torch.mean(hms, dim=0)
     return hm
 
+
+
 def model_init():
 
     config = 'keypointEstimators/models/wholepose/wholebody_w48_384x288.yaml'
@@ -144,7 +146,9 @@ def frame_process(wholepose, frame):
 
     y = result // (frame_width // 4)
     x = result % (frame_width // 4)
+
     pred = np.zeros((133, 3), dtype=np.float32)
+    
     pred[:, 0] = x
     pred[:, 1] = y
 
