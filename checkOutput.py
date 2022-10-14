@@ -1,4 +1,14 @@
+from msilib import datasizemask
 import pandas as pd
+from utils import read_h5
 
-val = pd.read_pickle("./output/PUCP_PSL_DGI156--mediapipe.pk")
-print(len(val.T["data"]))
+
+glosses, videoName, data = read_h5("output/PUCP_PSL_DGI156--mediapipe.hdf5")
+
+dataset = pd.DataFrame({
+    "glosses":glosses,
+    "videoName":videoName,
+    "data":data
+})
+
+print(dataset)
