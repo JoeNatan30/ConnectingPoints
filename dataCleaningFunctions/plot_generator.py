@@ -13,12 +13,14 @@ def plot_hist(generalDensity, category, bins=20):
                 kde=True, kde_kws=dict(cut=3))
     # in the next version of the distplot function, one would have to write:
     # sns.distplot(data=df, x="sepal_length", kind='hist') # note that 'kind' is 'hist' by default
-    plt.savefig(os.sep.join([path,category+".png"]))
+    plt.savefig(os.sep.join([folder,category+".png"]))
     plt.clf()
     #plt.show()
 
 data = pd.read_csv("results.csv")
-path = "histograms"
+folder = "./histograms"
+
+os.makedirs(folder,exist_ok=True)
 
 unique_classes = list(set(data.classes))
 
