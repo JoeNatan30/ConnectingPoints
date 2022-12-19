@@ -1,5 +1,5 @@
 import h5py
-
+import pandas as pd
 
 def read_h5(path):
 
@@ -15,3 +15,15 @@ def read_h5(path):
             data.append(f[index]["data"][...])
     
     return classes, videoName, data
+
+
+def create_df(path):
+
+    glosses, videoName, data = read_h5(path)
+
+    df = pd.DataFrame.from_dict({
+        "classes":glosses,
+        "videoName": videoName,
+        "data":data,  
+    })
+    return df
