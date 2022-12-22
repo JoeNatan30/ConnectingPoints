@@ -66,8 +66,6 @@ for unique_class in unique_classes:
     delete_count = delete_count + len(to_ban)
     total_count = total_count + len(distance)
 
-
-
     videos_to_ban = videos_to_ban + list(to_ban["videoName"])
     
 
