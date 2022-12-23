@@ -37,19 +37,19 @@ def delete_ext(row):
 
     return row
 
-def is_banned_column(pd, pd_ban, column_name, matrix_ban):
+def is_banned_column(dataframe, pd_ban, column_name, matrix_ban):
 
 
-    pred = df['Video name'].isin(pd_ban[0])
+    pred = dataframe['Video name'].isin(pd_ban[0])
 
     '''
     Notice the following:
-     - True  is set to 0 (that means that was banned)
-     - False is set to 1 
+     - True  means that is in the banned list - and banned instances is categorize by 0
+     - False means that is a good instance - it is represent by 1 
     '''
     pred = pred.replace({True: 0, False: 1})
 
-    matrix_ban['actual'] = matrix_ban['actual'] + list(df[column_name])
+    matrix_ban['actual'] = matrix_ban['actual'] + list(dataframe[column_name])
     matrix_ban['predicted'] = matrix_ban['predicted'] + list(pred)
 
     return matrix_ban
@@ -76,7 +76,9 @@ byDistance = pd.read_csv("../dataCleaningFunctions/banned_videos_by_distance.csv
 byDistance = byDistance.apply(delete_ext,axis=1)
 print(byDistance)
 
-byBothBan = byVideoDur.merge(byDistance)
+byBothBan = pd.concat([byVideoDur,byDistance])
+byBothBan = byBothBan.drop_duplicates()
+print(byBothBan)
 
 matrix_by_distance = {'actual': [],
                       'predicted': []}
@@ -89,19 +91,19 @@ matrix_by_both_ban = {'actual': [],
 
 for gloss, df in diff.items():
     
-    df = df.apply(video_path_format,axis=1)
+    df_mod = df.apply(video_path_format,axis=1)
 
     # BY DISTANCE
-    matrix_by_distance = is_banned_column(df, byDistance,'TrueLabel-distance', matrix_by_distance)
+    matrix_by_distance = is_banned_column(df_mod, byDistance,'TrueLabel-distance', matrix_by_distance)
 
     # BY VIDEO DURATION
-    matrix_by_video_dur = is_banned_column(df, byVideoDur, 'TrueLabel-VidDuration', matrix_by_video_dur)
+    matrix_by_video_dur = is_banned_column(df_mod, byVideoDur, 'TrueLabel-VidDuration', matrix_by_video_dur)
     
     # BY BOTH BAN METHOD
-    matrix_by_both_ban = is_banned_column(df, byBothBan, 'TrueLabel-Strict', matrix_by_both_ban)
+    matrix_by_both_ban = is_banned_column(df_mod, byBothBan, 'TrueLabel-Strict', matrix_by_both_ban)
 
-print(matrix_by_video_dur['actual'])
-print(matrix_by_video_dur['predicted'])
+#print(matrix_by_video_dur['actual'])
+#print(matrix_by_video_dur['predicted'])
 
 plot_confusion_matrix(matrix_by_distance, 'banned_by_distance.png')
 plot_confusion_matrix(matrix_by_video_dur, 'banned_by_video_duration.png')
