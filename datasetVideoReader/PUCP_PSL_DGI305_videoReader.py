@@ -16,11 +16,14 @@ def get_data():
     # .split('_')[:-1] to take the label of the video
     labels = [_path.split(os.sep)[-1].split('_')[:-1]for _path in video_list['video_path']]
 
+    labels = [_label[0] for _label in labels]
+
     # JUST TO MIX VARIANTS
-    labels = [_label[0].split("-")[0] if len(_label[0].split("-")[0]) > 1 \
-                                      else _label[0]  \
-              for _label in labels]
+    #labels = [_label[0].split("-")[0] if len(_label[0].split("-")[0]) > 1 \
+    #                                  else _label[0]  \
+    #          for _label in labels]
     # to change '' label to PeruSil standar '???'
+    print(labels)
     labels = [_label if _label != '' else '???' for _label in labels ]
 
     labels = [_label if '-' in _label else _label.lower() for _label in labels ]

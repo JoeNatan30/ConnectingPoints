@@ -21,11 +21,11 @@ class DataReader():
 
             path = os.path.normpath(f"output/{dataset}--{kpModel}.hdf5")
             classes, videoName, data = read_h5(path)
-
             self.classes = self.classes + classes
             self.videoName = self.videoName + videoName
             self.data = self.data + data
     
+
     def generate_meaning_dict(self):
 
         meaning = {v:k for (k,v) in enumerate(set(self.classes))}
@@ -68,10 +68,10 @@ class DataReader():
 
         if train:
             print("Train:", len(indexOrder))
-            path = f"{save_path[0]}-Train-comp.hdf5"
+            path = f"{save_path[0]}-Train.hdf5"
         else:
             print("Val:", len(indexOrder))
-            path = f"{save_path[0]}-Val-comp.hdf5"
+            path = f"{save_path[0]}-Val.hdf5"
 
         # Save H5 
         h5_file = h5py.File(path, 'w')
@@ -99,10 +99,11 @@ class DataReader():
         # Errase banned words
         df_banned = pd.read_csv("bannedList.csv",encoding='latin1', header=None)
         bannedList = list(df_banned[0])
-        bannedList = [ban.lower() for ban in bannedList] + [ban for ban in bannedList] + ['lugar', 'qué?', 'sí', 'manejar', 'tú', 'ahí', 'dormir', 'cuatro', 'él'] #["hummm"]
+        bannedList = [ban.lower() for ban in bannedList] + [ban for ban in bannedList] + ['lugar', 'qué?', 'sí', 'manejar', 'tú', 'ahí', 'dormir', 'cuatro', 'él', 'NNN'] #["hummm"]
         
         #bannedList
         selected = list(set(counter) - set(bannedList))
+        selected = [_selected.lower() for _selected in selected]
         print("After ban:", len(selected))
         # Filter the data to have selected instances
         self.selectInstances(selected)

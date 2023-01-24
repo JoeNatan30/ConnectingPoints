@@ -64,13 +64,15 @@ def frame_process(holistic, frame):
 
     # HANDS
 
+    
     # Left hand
     kpDict["left_hand"]={}
 
     if(holisResults.left_hand_landmarks):
         kpDict["left_hand"] = [ [point.x, point.y] for point in holisResults.left_hand_landmarks.landmark]
     else:
-        kpDict["left_hand"] = [ [0.0, 0.0] for point in range(0, 21)]
+        #set the left wrist as hand points
+        kpDict["left_hand"] = [ [kpDict["pose"][15][0], kpDict["pose"][15][1]] for point in range(0, 21)]
     kpDict["left_hand"] = np.asarray(kpDict["left_hand"])
 
     # Right hand
@@ -80,7 +82,8 @@ def frame_process(holistic, frame):
         kpDict["right_hand"] = [ [point.x, point.y] for point in holisResults.right_hand_landmarks.landmark]
 
     else:
-        kpDict["right_hand"] = [ [0.0, 0.0] for point in range(0, 21)]
+        # set the rigth wrist as hand points
+        kpDict["right_hand"] = [ [kpDict["pose"][16][0], kpDict["pose"][16][1]] for point in range(0, 21)]
     kpDict["right_hand"] = np.asarray(kpDict["right_hand"])
 
     # Face mesh
