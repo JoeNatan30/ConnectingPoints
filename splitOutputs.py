@@ -81,7 +81,7 @@ class DataReader():
         counter = Counter(self.classes)
 
         # Select the words that have more or equal than 15 instances    
-        counter = [word for word, count in counter.items() if count >= 15]
+        counter = [word for word, count in counter.items() if count >= 10]
         print(counter)
         # Errase banned words
         bannedList = ["ya", "qué?", "qué", "bien", "dos", "ahí", "luego", "yo", "él", "tú", "???", "NNN", "sí"]
