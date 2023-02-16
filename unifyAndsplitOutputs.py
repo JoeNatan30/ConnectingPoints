@@ -61,7 +61,8 @@ class DataReader():
         videoName_tmp = [self.videoName[pos] for pos in indexOrder]
         data_tmp = [self.data[pos] for pos in indexOrder]
         labels_tmp = [self.labels[pos] for pos in indexOrder]
-
+        print(set(class_tmp))
+        print(len(set(class_tmp)))
         # set the path
         save_path = os.path.normpath(f"split/{self.output_path.split(os.sep)[1]}")
         save_path = save_path.split('.')
@@ -100,10 +101,13 @@ class DataReader():
         df_banned = pd.read_csv("bannedList.csv",encoding='latin1', header=None)
         bannedList = list(df_banned[0])
         bannedList = [ban.lower() for ban in bannedList] + [ban for ban in bannedList] + ['lugar', 'qué?', 'sí', 'manejar', 'tú', 'ahí', 'dormir', 'cuatro', 'él', 'NNN'] #["hummm"]
-        
+        bannedList = list(set(bannedList))
+
         #bannedList
         selected = list(set(counter) - set(bannedList))
-        selected = [_selected.lower() for _selected in selected]
+        print('#'*40)
+        print(selected, len(selected))
+        #selected = [_selected.lower() for _selected in selected]
         print("After ban:", len(selected))
         # Filter the data to have selected instances
         self.selectInstances(selected)
