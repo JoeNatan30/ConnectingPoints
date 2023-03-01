@@ -100,7 +100,7 @@ class DataReader():
         # Errase banned words
         df_banned = pd.read_csv("bannedList.csv",encoding='latin1', header=None)
         bannedList = list(df_banned[0])
-        bannedList = [ban.lower() for ban in bannedList] + [ban for ban in bannedList] + ['lugar', 'qué?', 'sí', 'manejar', 'tú', 'ahí', 'dormir', 'cuatro', 'él', 'NNN'] #["hummm"]
+        bannedList = [ban.lower() for ban in bannedList] + [ban for ban in bannedList] #+ ['lugar', 'qué?', 'sí', 'manejar', 'tú', 'ahí', 'dormir', 'cuatro', 'él', 'NNN'] #["hummm"]
         bannedList = list(set(bannedList))
 
         #bannedList
@@ -128,8 +128,6 @@ class DataReader():
     
 kpModel = "mediapipe"
 datasets = ["AEC", "PUCP_PSL_DGI156", "PUCP_PSL_DGI305"]
-
-
 
 dataset_out_name = [dataset if len(dataset)<6 else dataset[-6:] for dataset in datasets]
 dataset_out_name = '-'.join(dataset_out_name)
