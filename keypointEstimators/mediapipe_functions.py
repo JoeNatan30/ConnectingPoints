@@ -19,6 +19,30 @@ def model_init(static_image_mode=True, min_detection_confidence=0.5, min_trackin
 
     return holistic
 
+def normalization(keypoints, shoulder_distance, mid_distance):
+
+    head_metric = shoulder_distance
+
+    # keypoints[5] is the righ eye of the pose
+    starting_point = [mid_distance[0] - 3 * head_metric, keypoints[1][5] - head_metric]
+    ending_point = [mid_distance[0] + 3 * head_metric, starting_point[1] + 4.5 * head_metric]
+
+
+    # Normalize individual landmarks and save the results
+    for pos, kp in enumerate(keypoints[0]):
+        
+        # Prevent from trying to normalize incorrectly captured points
+        if keypoints[0][pos] == 0.0:
+            continue
+
+        normalized_x = (keypoints[0][pos] - starting_point[0]) / (ending_point[0] - starting_point[0])
+        normalized_y = (keypoints[1][pos] -   ending_point[1]) / (starting_point[1] - ending_point[1])
+
+        keypoints[0][pos] = normalized_x
+        keypoints[1][pos] = 1 - normalized_y
+        
+    return keypoints
+
 def format_model_output(output):
     
     pose = output['pose']
@@ -26,18 +50,26 @@ def format_model_output(output):
     left_hand = output['left_hand']
     right_hand = output['right_hand']
 
+    neck = (pose[11] + pose[12]) / 2
+
     newFormat = []
 
     newFormat.append(pose)
     newFormat.append(face)
     newFormat.append(left_hand)
     newFormat.append(right_hand)
+    newFormat.append([neck])
 
     x = np.asarray([item[0] for sublist in newFormat for item in sublist])
     y = np.asarray([item[1] for sublist in newFormat for item in sublist])
 
     #body_location = [item for sublist in bType for item in sublist]
     out = np.asarray([x,y])
+
+    # Calculate shoulder distance
+    if pose[11][0] != 0.0 or pose[12][0] != 0.0:
+        shoulder_distance = np.linalg.norm(pose[11] - pose[12])
+        out = normalization(out, shoulder_distance, neck)
 
     return out
 
