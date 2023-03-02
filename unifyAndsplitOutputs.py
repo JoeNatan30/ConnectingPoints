@@ -100,7 +100,7 @@ class DataReader():
         # Errase banned words
         df_banned = pd.read_csv("bannedList.csv",encoding='latin1', header=None)
         bannedList = list(df_banned[0])
-        bannedList = [ban.lower() for ban in bannedList] + [ban for ban in bannedList] #+ ['lugar', 'qué?', 'sí', 'manejar', 'tú', 'ahí', 'dormir', 'cuatro', 'él', 'NNN'] #["hummm"]
+        bannedList = [ban.lower() for ban in bannedList] + [ban for ban in bannedList] + ['él','tú','','G-R']#+ ['lugar', 'qué?', 'sí', 'manejar', 'tú', 'ahí', 'dormir', 'cuatro', 'él', 'NNN'] #["hummm"]
         bannedList = list(set(bannedList))
 
         #bannedList
