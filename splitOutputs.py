@@ -81,10 +81,11 @@ class DataReader():
         counter = Counter(self.classes)
 
         # Select the words that have more or equal than 15 instances    
-        counter = [word for word, count in counter.items() if count >= 10]
+        counter = [word for word, count in counter.items() if count >= 5]
         print(counter)
+        print("total:",len(counter))
         # Errase banned words
-        bannedList = ["ya", "qué?", "qué", "bien", "dos", "ahí", "luego", "yo", "él", "tú", "???", "NNN", "sí"]
+        bannedList = ['???', 'NNN', '']#["ya", "qué?", "qué", "bien", "dos", "ahí", "luego", "yo", "él", "tú", "???", "NNN", "sí"]
         selected = list(set(counter) - set(bannedList))
 
         # Filter the data to have selected instances
@@ -103,7 +104,7 @@ class DataReader():
 
     
 
-for dataset in ["AEC", "WLASL", "PUCP_PSL_DGI156", "PUCP_PSL_DGI305"]:
+for dataset in ["AEC", "PUCP_PSL_DGI156", "PUCP_PSL_DGI305"]: #["WLASL"]
     for kpModel in ["mediapipe"]: # ["mediapipe", "openpose", "wholepose"]:
         
         print(f"procesing {dataset}-{kpModel}...")
