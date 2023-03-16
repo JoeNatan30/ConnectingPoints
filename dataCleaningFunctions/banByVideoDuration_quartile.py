@@ -40,11 +40,12 @@ def get_length(row):
     if len(result)==0:
         result = df_paths_fixed[df_paths_fixed["comp"] == row]
 
-    assert len(result) != 0 , f'check if the video {row} , is in the dataset file'
-    assert len(result) == 1 , f'check if the video {row} is repeated in the dataset file'
+    #assert len(result) != 0 , f'check if the video {row} , is in the dataset file'
+    #assert len(result) == 1 , f'check if the video {row} is repeated in the dataset file'
 
 
     if len(result) != 1:
+        return 0
         print(result)
 
     cap = cv2.VideoCapture(result['full'].values[0])

@@ -16,3 +16,4 @@ git clone https://github.com/dxli94/WLASL.git
 cd ..
 
 mkdir output
+gdown https://drive.google.com/uc?id=1q1flAHyPnGB7MfPEJv0P9mMKCJkrnBnr

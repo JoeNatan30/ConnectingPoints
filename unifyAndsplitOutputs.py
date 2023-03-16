@@ -94,13 +94,13 @@ class DataReader():
         counter = Counter(self.classes)
         print(counter)
         # Select the words that have more or equal than 15 instances    
-        counter = [word for word, count in counter.items() if count >= 15]
+        counter = [word for word, count in counter.items() if count >= 20]
         print("Before ban:",len(counter))
         
         # Errase banned words
         df_banned = pd.read_csv("bannedList.csv",encoding='latin1', header=None)
         bannedList = list(df_banned[0])
-        bannedList = [ban.lower() for ban in bannedList] + [ban for ban in bannedList] #+ ['lugar', 'qué?', 'sí', 'manejar', 'tú', 'ahí', 'dormir', 'cuatro', 'él', 'NNN'] #["hummm"]
+        bannedList = [ban.lower() for ban in bannedList] + [ban for ban in bannedList] + ['él','tú','','G-R']#+ ['lugar', 'qué?', 'sí', 'manejar', 'tú', 'ahí', 'dormir', 'cuatro', 'él', 'NNN'] #["hummm"]
         bannedList = list(set(bannedList))
 
         #bannedList
