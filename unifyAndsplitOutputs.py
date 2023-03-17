@@ -35,6 +35,27 @@ class DataReader():
 
         self.classes = list(map(lambda x: x.replace('amigos', 'amigo'), self.classes))
 
+        banned_selected = list(pd.read_csv('./dataCleaningFunctions/banned_selected_videos.csv',  header=None)[0])
+        banned_selected = [_name.replace('\\','/') for _name in banned_selected]
+
+        classes = []
+        videoName = []
+        data = []
+
+        for pos in range(len(self.classes)):
+            #To avoid no selected classes
+
+            if self.videoName[pos] in banned_selected:
+                continue
+
+            classes.append(self.classes[pos])
+            videoName.append(self.videoName[pos])
+            data.append(self.data[pos])
+
+        self.classes = classes
+        self.videoName = videoName
+        self.data = data
+
     def selectInstances(self, selected):
     
         classes = []
@@ -94,7 +115,7 @@ class DataReader():
         counter = Counter(self.classes)
         print(counter)
         # Select the words that have more or equal than 15 instances    
-        counter = [word for word, count in counter.items() if count >= 20]
+        counter = [word for word, count in counter.items() if count >= 19]
         print("Before ban:",len(counter))
         
         # Errase banned words
@@ -127,7 +148,7 @@ class DataReader():
 
     
 kpModel = "mediapipe"
-datasets = ["AEC", "PUCP_PSL_DGI156", "PUCP_PSL_DGI305"]
+datasets = ["AEC", "PUCP_PSL_DGI156", "PUCP_PSL_DGI305"] #["WLASL"]
 
 dataset_out_name = [dataset if len(dataset)<6 else dataset[-6:] for dataset in datasets]
 dataset_out_name = '-'.join(dataset_out_name)

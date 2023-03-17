@@ -33,8 +33,8 @@ class DataReader():
         self.labels = [meaning[_class] for _class in self.classes]
 
     def fixClasses(self):
-        tmp = list(map(lambda x: x.replace('amigos', 'amigo'), self.classes))
-        self.classes = tmp
+
+        self.classes = list(map(lambda x: x.replace('amigos', 'amigo'), self.classes))
 
     def selectInstances(self, selected):
     
@@ -90,6 +90,7 @@ class DataReader():
 
 
     def splitDataset(self):
+        
         # To know the number of instance per clases
         counter = Counter(self.classes)
         print(counter)
@@ -139,6 +140,7 @@ output_path = f"output/{dataset_out_name}300--{kpModel}.hdf5"
 
 dataReader = DataReader(datasets, kpModel, output_path)
 dataReader.fixClasses()
+
 dataReader.splitDataset()
 #splitDataset(path)
 
