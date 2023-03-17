@@ -94,7 +94,7 @@ class DataReader():
         else:
             print("Val:", len(indexOrder))
             path = f"{save_path[0]}-Val.hdf5"
-        '''
+
         # Save H5 
         h5_file = h5py.File(path, 'w')
 
@@ -107,7 +107,7 @@ class DataReader():
             #h5_file[grupo_name]['class_number'] = l #label (int)
             
         h5_file.close()
-        '''
+
 
     def splitDataset(self):
         
@@ -115,7 +115,7 @@ class DataReader():
         counter = Counter(self.classes)
         print(counter)
         # Select the words that have more or equal than 15 instances    
-        counter = [word for word, count in counter.items() if count >= 20]
+        counter = [word for word, count in counter.items() if count >= 19]
         print("Before ban:",len(counter))
         
         # Errase banned words
