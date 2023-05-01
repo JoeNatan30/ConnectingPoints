@@ -6,10 +6,10 @@ Repository used to unify keypoints estimators output into a single format, thus 
 
 | Datasets                | Description                                                                                | Download Link                                                                                                   |
 |-------------------------|--------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
-| AEC                     | "Aprendo En Casa" Peruvian Sign Language (LSP), Videos are taken from datasets/AEC/Videos/SEGMENTED_SIGN            | [AEC link](https://drive.google.com/uc?id=1WHxKijB8t5JLljM59hAqi5KY0U6d7OzA)                                 |
-| PUCP_PSL_DGI156         | "PUCP University Peruvian Sign Language Dirección de investigación N° 156", Videos are taken from datasets/PUCP_PSL_DGI156/Videos/cropped                              | [PUCP_PSL_DGI156](https://drive.google.com/uc?id=1WHxKijB8t5JLljM59hAqi5KY0U6d7OzA)                          |
+| AEC                     | "Aprendo En Casa" Peruvian Sign Language (LSP), Videos are taken from datasets/AEC/Videos/SEGMENTED_SIGN            | [AEC_link](https://drive.google.com/uc?id=1WHxKijB8t5JLljM59hAqi5KY0U6d7OzA)                                 |
+| PUCP_PSL_DGI156         | "PUCP University Peruvian Sign Language Dirección de investigación N° 156", Videos are taken from datasets/PUCP_PSL_DGI156/Videos/cropped                              | [PUCP_PSL_DGI156_link](https://drive.google.com/uc?id=1WHxKijB8t5JLljM59hAqi5KY0U6d7OzA)                          |
 | WLASL (Word Level ASL)  | "Word-level American Sign Language". Need to download and follow the WLASL guide                                             | [WLALS link](https://github.com/dxli94/WLASL)                                                                   |
-| AUTSL (Turkish SL)      | "The Arkara University Turkish Sign Language"                                                                         | [AUTSL](http://cvml.ankara.edu.tr/datasets/)                                                                    |
+| AUTSL (Turkish SL)      | "The Arkara University Turkish Sign Language"                                                                         | [AUTSL_link](http://cvml.ankara.edu.tr/datasets/)                                                                    |
 | INCLUDE (Indian SL)     | "A Large Scale Dataset for Indian Sign Language Recognition"                                                                         | [INCLUDE link](https://zenodo.org/record/4010759)                                                              |
 
 
