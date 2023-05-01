@@ -24,7 +24,34 @@ class DataReader():
             self.classes = self.classes + classes
             self.videoName = self.videoName + videoName
             self.data = self.data + data
-    
+
+    def deleteSelectedVideosToBan(self):
+
+        df_selectedBanned = pd.read_csv("./dataCleaningFunctions/banned_selected_videos.csv", header=None)
+        selectedBanned = [banned.replace('\\','/') for banned in df_selectedBanned[0]]
+
+        # We go through the inverse of the list to use "pop" to delete the banned words
+        for pos in range(len(self.videoName)-1, -1, -1):
+
+            if self.videoName[pos] in selectedBanned:
+                self.classes.pop(pos)
+                self.videoName.pop(pos)
+                self.data.pop(pos)
+
+    def deleteBannedWords(self):
+
+        df_bannedWords = pd.read_csv("./bannedList.csv",encoding='latin1', header=None)
+        bannedList = list(df_bannedWords[0])
+
+        bannedList = bannedList + [ban.lower() for ban in bannedList] + ['él','tú','','G-R']#+ ['lugar', 'qué?', 'sí', 'manejar', 'tú', 'ahí', 'dormir', 'cuatro', 'él', 'NNN'] #["hummm"]
+
+        for pos in range(len(self.classes)-1, -1, -1):
+            if self.classes[pos] in bannedList:
+                self.classes.pop(pos)
+                self.videoName.pop(pos)
+                self.data.pop(pos)
+
+
 
     def generate_meaning_dict(self):
 
@@ -35,26 +62,15 @@ class DataReader():
 
         self.classes = list(map(lambda x: x.replace('amigos', 'amigo'), self.classes))
 
-        banned_selected = list(pd.read_csv('./dataCleaningFunctions/banned_selected_videos.csv',  header=None)[0])
-        banned_selected = [_name.replace('\\','/') for _name in banned_selected]
+        _before = len(self.classes)
+        self.deleteSelectedVideosToBan()
 
-        classes = []
-        videoName = []
-        data = []
+        print(f"About {_before - len(self.classes)} instances has been deleted by the ban list 'selectedVideos'")
+        
+        _before = len(self.classes)
+        self.deleteBannedWords()
 
-        for pos in range(len(self.classes)):
-            #To avoid no selected classes
-
-            if self.videoName[pos] in banned_selected:
-                continue
-
-            classes.append(self.classes[pos])
-            videoName.append(self.videoName[pos])
-            data.append(self.data[pos])
-
-        self.classes = classes
-        self.videoName = videoName
-        self.data = data
+        print(f"About {_before - len(self.classes)} instances has been deleted by the ban list 'banned words'")
 
     def selectInstances(self, selected):
     
@@ -113,31 +129,21 @@ class DataReader():
         
         # To know the number of instance per clases
         counter = Counter(self.classes)
-        print(counter)
-        # Select the words that have more or equal than 15 instances    
-        counter = [word for word, count in counter.items() if count >= 19]
-        print("Before ban:",len(counter))
+        #print(counter)
+        # Select the words that have more or equal than # instances    
+        counter = [word for word, count in counter.items() if count >= 25]
         
         # Errase banned words
         df_banned = pd.read_csv("bannedList.csv",encoding='latin1', header=None)
-        bannedList = list(df_banned[0])
-        bannedList = [ban.lower() for ban in bannedList] + [ban for ban in bannedList] + ['él','tú','','G-R']#+ ['lugar', 'qué?', 'sí', 'manejar', 'tú', 'ahí', 'dormir', 'cuatro', 'él', 'NNN'] #["hummm"]
-        bannedList = list(set(bannedList))
 
-        #bannedList
-        selected = list(set(counter) - set(bannedList))
         print('#'*40)
-        print(selected, len(selected))
-        #selected = [_selected.lower() for _selected in selected]
-        print("After ban:", len(selected))
+
         # Filter the data to have selected instances
-        self.selectInstances(selected)
+        self.selectInstances(counter)
 
         # generate classes number to use it in stratified option
         self.generate_meaning_dict()
         print()
-        
-        print("==>",list(np.sort(np.array(selected))))
         # split the data into Train and Val (but use list position as X to reorder)
         x_pos = range(len(self.labels))
         pos_train, pos_val, y_train, y_val = train_test_split(x_pos, self.labels, train_size=0.8 , random_state=32, stratify=self.labels)
@@ -148,7 +154,7 @@ class DataReader():
 
     
 kpModel = "mediapipe"
-datasets = ["AEC", "PUCP_PSL_DGI156", "PUCP_PSL_DGI305"] #["WLASL"]
+datasets = ["INCLUDE"]#["AEC", "PUCP_PSL_DGI156", "PUCP_PSL_DGI305"] #["WLASL"]
 
 dataset_out_name = [dataset if len(dataset)<6 else dataset[-6:] for dataset in datasets]
 dataset_out_name = '-'.join(dataset_out_name)

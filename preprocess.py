@@ -14,6 +14,7 @@ import h5py
 # Local imports
 import commandSystem as cs
 from datasetVideoReader import AEC_videoReader, PUCP_videoReader, WASL_videoReader, PUCP_PSL_DGI305_videoReader
+from datasetVideoReader import AUTSL_videoReader, INCLUDE_VideoReader
 
 try:
     from keypointEstimators import mediapipe_functions
@@ -41,6 +42,8 @@ def get_datasets_data(dataset_opt):
     video_reader = {"AEC": AEC_videoReader,
                     "PUCP_PSL_DGI156": PUCP_videoReader,
                     "PUCP_PSL_DGI305": PUCP_PSL_DGI305_videoReader,
+                    "INCLUDE": INCLUDE_VideoReader,
+                    "AUTSL": AUTSL_videoReader,
                     "WLASL": WASL_videoReader}
 
     dataset_list = []
@@ -70,8 +73,7 @@ def get_keypoint_from_estimator(path, label, model, kp_est_chosed, keypoint_esti
 
     if (cap.isOpened() is False):
         print("Unable to read camera feed", path)
-        results[kp_est_chosed].append([])
-        return results, True
+        return np.array([])
 
     print("processing", path)
     ret, frame = cap.read()
@@ -101,6 +103,10 @@ def partial_save(output, partial_output_name, estimator):
 
 def get_keypoint_estimator_standarized_output(kpoint_est_opt, data, partial_output_name):
 
+    dataset_name = partial_output_name
+
+    partial_output_name = '-'.join(partial_output_name)
+
     # Select keypoint stimator
     kp_est_chosed = kpoint_est_opt[0]
     if "openpose" == kp_est_chosed:
@@ -124,11 +130,16 @@ def get_keypoint_estimator_standarized_output(kpoint_est_opt, data, partial_outp
 
         # Where the video is processed
         kp_list = get_keypoint_from_estimator(path, label, model, kp_est_chosed, keypoint_estimator)
- 
+
+        if len(kp_list) == 0:
+            print("Error in:", path)
+            continue
+
         # accumulate data
         grupo_name = f"{num}"
         h5_file.create_group(grupo_name)
-        h5_file[grupo_name]['video_name'] = os.sep.join(path.split(os.sep)[-2:])
+        # TODO hacer que se devuelva el valor de todo el path desde la carpeta del dataset
+        h5_file[grupo_name]['video_name'] = path.split(dataset_name[0])[-1][1:]
         h5_file[grupo_name]['label'] = label
         h5_file[grupo_name]['data'] = np.asarray(kp_list)
 
@@ -151,4 +162,4 @@ data = get_datasets_data(dataset_opt)
 kpoint_est_opt = cs.select_keypoint_estimator()
 
 # To process the data
-get_keypoint_estimator_standarized_output(kpoint_est_opt, data, '-'.join(dataset_opt))
+get_keypoint_estimator_standarized_output(kpoint_est_opt, data, dataset_opt)

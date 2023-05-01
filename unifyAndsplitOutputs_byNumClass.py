@@ -8,7 +8,7 @@ import numpy as np
 
 from utils import read_h5
 
-CLASS_NUM = 50
+CLASS_NUM = 100
 
 class DataReader():
 
@@ -145,7 +145,7 @@ class DataReader():
 
     
 kpModel = "mediapipe"
-datasets = ["PUCP_PSL_DGI305"] #["AEC", "PUCP_PSL_DGI156", "PUCP_PSL_DGI305", "WLASL"]
+datasets = ["AUTSL"] #["AEC", "PUCP_PSL_DGI156", "PUCP_PSL_DGI305", "WLASL"]
 
 dataset_out_name = [dataset if len(dataset)<6 else dataset[-6:] for dataset in datasets]
 dataset_out_name = '-'.join(dataset_out_name)

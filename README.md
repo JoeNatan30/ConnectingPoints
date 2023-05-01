@@ -3,12 +3,15 @@
 Repository used to unify keypoints estimators output into a single format, thus making them comparable and analysable.
 
 ## Datasets thats works:
- - **AEC**
- (videos are taken from datasets/AEC/Videos/SEGMENTED_SIGN)
- - **PUCP_PSL_DGI156**
- (videos are taken from datasets/PUCP_PSL_DGI156/Videos/cropped)
- - **WLASL**
- (need to download, follow the WLASL guide in [WLALS link](https://github.com/dxli94/WLASL))
+
+| Datasets                | Description                                                                                | Download Link                                                                                                   |
+|-------------------------|--------------------------------------------------------------------------------------------|-----------------------------------------------------------------------------------------------------------------|
+| AEC                     | "Aprendo En Casa" Peruvian Sign Language (LSP), Videos are taken from datasets/AEC/Videos/SEGMENTED_SIGN            | [AEC link](https://drive.google.com/uc?id=1WHxKijB8t5JLljM59hAqi5KY0U6d7OzA)                                 |
+| PUCP_PSL_DGI156         | "PUCP University Peruvian Sign Language Dirección de investigación N° 156", Videos are taken from datasets/PUCP_PSL_DGI156/Videos/cropped                              | [PUCP_PSL_DGI156](https://drive.google.com/uc?id=1WHxKijB8t5JLljM59hAqi5KY0U6d7OzA)                          |
+| WLASL (Word Level ASL)  | "Word-level American Sign Language". Need to download and follow the WLASL guide                                             | [WLALS link](https://github.com/dxli94/WLASL)                                                                   |
+| AUTSL (Turkish SL)      | "The Arkara University Turkish Sign Language"                                                                         | [AUTSL](http://cvml.ankara.edu.tr/datasets/)                                                                    |
+| INCLUDE (Indian SL)     | "A Large Scale Dataset for Indian Sign Language Recognition"                                                                         | [INCLUDE link](https://zenodo.org/record/4010759)                                                              |
+
 
  More information about AEC and PUCP_PSL_DGI156 in [PeruSIL](https://github.com/gissemari/PeruvianSignLanguage)
 ------
@@ -17,6 +20,7 @@ Repository used to unify keypoints estimators output into a single format, thus 
  - **Openpose**
  - **Wholepose**
 
+Note: more info about this model installation are in **Dataset download and Models installation**
 ------
  ## Output structure
 
@@ -69,7 +73,7 @@ It also be installing by running:
  ```
  sh download_model.sh
  ```
- this will download "wholebody_hrnet_w48_384x384" pretrained model of [Coco-Wholebody github](https://github.com/jin-s13/COCO-WholeBody)
+ this will download "wholebody_hrnet_w48_384x384" pretrained model of [Coco-Wholebody github](https://github.com/jin-s13/COCO-WholeBody). The link was obtained from (Smile-lab)[https://github.com/jackyjsy/CVPR21Chal-SLR]
 
  - **OpenPose**
 
@@ -79,7 +83,7 @@ It also be installing by running:
  ```
  sh openpose_installation.sh
  ```
- This will download the [openpose repository] and then install it with the requiered dependencies to use openpose in python.
+ This will download the [openpose repository](https://github.com/CMU-Perceptual-Computing-Lab/openpose) and then install it with the requiered dependencies to use openpose in python.
 
  If you have another Nvidia architecture that not correspont with the one in cmake, please modify **cmake parameters**
 
