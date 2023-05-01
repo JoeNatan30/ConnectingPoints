@@ -14,13 +14,22 @@ Repository used to unify keypoints estimators output into a single format, thus 
 
 
  More information about AEC and PUCP_PSL_DGI156 in [PeruSIL](https://github.com/gissemari/PeruvianSignLanguage)
+ 
+## download AEC and PUCP_DGI_156 dataset
+
+run:
+```
+sh create_folders_and_dataset.sh
+```
+The other datasets have to be located manually in the "dataset" folder
+
 ------
 ## Keypoint estimators available
  - **Mediapipe**
  - **Openpose**
  - **Wholepose**
 
-Note: more info about this model installation are in **Dataset download and Models installation**
+Note: more info about this model installation are in **Keypoint estimator models installation**
 ------
  ## Output structure
 
@@ -32,33 +41,26 @@ the output is an H5 file (.hdf5) with this structure:
 group("#") where # is an index
 
 each group will have:
-- ["video_name"] = name of the video
+- ["video_name"] = name of the video (this includes the relative path that starts after the name of the dataset)
 - ["label"] = isolated signs showed in the video
 - ["data"] = an TxCxK structure 
+
+video_name example (in AEC dataset): "Videos/SEGMENTED_SIGN/ira_alegria/abuelo_118.mp4"
 
 where:
 - T = timestep of the video
 - C = x and y coords
 - K = keypoints (with this order: "pose", "face", "left hand" and "right hand")
 ***
-# Dataset download and Models installation
-
-## prepare the enviroment
-
+# Prepare the environment
 create a new conda enviroment with python 3.8 (recommended)
 then run:
 ```
 sh requirements.sh
 ```
-## download datasets
 
-run:
-```
-sh create_folders_and_dataset.sh
-```
-remember that WLASL have additional steps
+# Keypoint estimator models installation
 
-## model installation
  - **Mediapipe**
 
 This library is already installed if you did the "prepare the enviroment" section.
