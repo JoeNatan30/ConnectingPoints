@@ -21,24 +21,34 @@ def create_dataset_info(row):
 
 def percentage_per_dataset(row):
 
+    '''
     total = row['AEC'] + row['DGI156'] + row['DGI305']
     row['AEC'] = row['AEC']/total
     row['DGI156'] = row['DGI156']/total
+    row['DGI305'] = row['DGI305']/total
+    '''
+    total = row['AEC'] + row['DGI305']
+    row['AEC'] = row['AEC']/total
     row['DGI305'] = row['DGI305']/total
 
     return row
 
 
-df_train = create_df("../split/AEC-DGI156-DGI305--mediapipe-Train.hdf5")
-df_val = create_df("../split/AEC-DGI156-DGI305--mediapipe-Val.hdf5")
+df_train = create_df("../split/AEC-DGI305--50--mediapipe-Train.hdf5")
+df_val = create_df("../split/AEC-DGI305--50--mediapipe-Val.hdf5")
 
 df_train['dataset'] = df_train['videoName'].apply(lambda x: create_dataset_info(x))
 df_val['dataset'] = df_val['videoName'].apply(lambda x: create_dataset_info(x))
 
+df_train['classes'] = df_train['classes'].str.lower()
+df_val['classes'] = df_val['classes'].str.lower()
+
 pd_mix_train = pd.concat([df_train, pd.DataFrame({'split':'train'}, index=df_train.index)], axis=1)
 pd_mix_val = pd.concat([df_val, pd.DataFrame({'split':'   val'}, index=df_val.index)], axis=1)
-pd_mix = pd_mix_train.append(pd_mix_val)
+pd_mix = pd.concat([pd_mix_train, pd_mix_val])
 
+#from collections import Counter
+#print(Counter(list(pd_mix['classes'])))
 #fig = class_counts.plot(kind='bar',  figsize=(20, 16), ).get_figure()
 
 #################################
@@ -72,8 +82,9 @@ df_train_groupby.plot(kind="bar",
                       x='classes',
                       ax=axes[0],
                       title="Training - Distribution by class",
-                      y=["AEC","DGI156","DGI305"],
-                      figsize=(20, 10),
+                      #y=["AEC","DGI156","DGI305"],
+                      y=["AEC","DGI305"],
+                      figsize=(14, 12),
                       stacked=True)
 
 df_val_groupby = pd_mix_val.groupby(['classes', 'dataset']).dataset.count().unstack().reset_index()
@@ -85,8 +96,9 @@ df_val_groupby.plot(kind="bar",
                     x='classes',
                     ax=axes[1],
                     title="Validation - Distribution by class",
-                    y=["AEC","DGI156","DGI305"],
-                    figsize=(20, 10),
+                    #y=["AEC","DGI156","DGI305"],
+                    y=["AEC","DGI305"],
+                    figsize=(14, 12),
                     stacked=True)
 fig.savefig('3-dataset-byClass-split.png')
 
@@ -101,8 +113,9 @@ df_train_groupby_perc.plot(kind="bar",
                       x='classes',
                       ax=axes[0],
                       title="Training - Distribution by class",
-                      y=["AEC","DGI156","DGI305"],
-                      figsize=(20, 10),
+                      #y=["AEC","DGI156","DGI305"],
+                      y=["AEC","DGI305"],
+                      figsize=(14, 12),
                       stacked=True)
 
 df_val_groupby_perc = df_val_groupby.apply(percentage_per_dataset ,axis=1)
@@ -110,8 +123,9 @@ df_val_groupby_perc.plot(kind="bar",
                     x='classes',
                     ax=axes[1],
                     title="Validation - Distribution by class",
-                    y=["AEC","DGI156","DGI305"],
-                    figsize=(20, 10),
+                    #y=["AEC","DGI156","DGI305"],
+                    y=["AEC","DGI305"],
+                    figsize=(14, 12),
                     stacked=True)
 
 fig.savefig('3-dataset-byClass-split-perc.png')

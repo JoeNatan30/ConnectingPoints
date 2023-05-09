@@ -10,7 +10,7 @@ import h5py
 
 # Local
 sys.path.append('../')
-from datasetVideoReader import  AEC_videoReader, PUCP_videoReader, WASL_videoReader
+from datasetVideoReader import  AEC_videoReader, PUCP_videoReader, WASL_videoReader, INCLUDE_VideoReader, AUTSL_videoReader, PUCP_PSL_DGI305_videoReader
 
 
 
@@ -26,7 +26,10 @@ def check(dataset, kpModel):
     print("Checking... ", dataset, kpModel)
     video_reader = {"AEC": AEC_videoReader,
                     "PUCP_PSL_DGI156": PUCP_videoReader,
-                    "WLASL": WASL_videoReader}
+                    "WLASL": WASL_videoReader,
+                    "PUCP_PSL_DGI305": PUCP_PSL_DGI305_videoReader,
+                    "AUTSL": AUTSL_videoReader,
+                    "INCLUDE": INCLUDE_VideoReader}
 
     dataPath = video_reader[dataset].get_data()
 
@@ -41,8 +44,6 @@ def check(dataset, kpModel):
             videoName_h5.append(f[index]['video_name'][...].item().decode('utf-8'))
             data_h5.append(np.asarray(f[index]["data"][...]))
             index_h5.append(index)
-        
-
 
     for path in dataPath['video_path']:
         cap = cv2.VideoCapture(path)
@@ -86,10 +87,9 @@ def check(dataset, kpModel):
         check = check.all()
         assert check, "Menor que -0.0"
 
-dataset = ["PUCP_PSL_DGI156", "AEC", "WLASL"]
-kpModel = ["wholepose"]# ["wholepose","mediapipe","openpose"]
+dataset = ["INCLUDE"]#["PUCP_PSL_DGI156", "AEC", "WLASL"]
+kpModel = ["mediapipe"]# ["wholepose","mediapipe","openpose"]
 
 for _kpModel in kpModel:
     for _dataset in dataset:
-    
         check(_dataset, _kpModel)
