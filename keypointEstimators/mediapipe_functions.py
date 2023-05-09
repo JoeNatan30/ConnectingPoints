@@ -67,9 +67,9 @@ def format_model_output(output):
     out = np.asarray([x,y])
 
     # Calculate shoulder distance
-    if pose[11][0] != 0.0 or pose[12][0] != 0.0:
-        shoulder_distance = np.linalg.norm(pose[11] - pose[12])
-        out = normalization(out, shoulder_distance, neck)
+    #if pose[11][0] != 0.0 or pose[12][0] != 0.0:
+    #    shoulder_distance = np.linalg.norm(pose[11] - pose[12])
+    #    out = normalization(out, shoulder_distance, neck)
 
     return out
 
