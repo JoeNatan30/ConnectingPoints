@@ -1,5 +1,7 @@
 import h5py
 import pandas as pd
+import numpy as np
+import csv
 
 def read_h5(path):
 
@@ -15,6 +17,31 @@ def read_h5(path):
             data.append(f[index]["data"][...])
     
     return classes, videoName, data
+
+def read_h5_with_features(path):
+
+    classes = []
+    videoName = []
+    data = []
+    data_false_seq = []
+    data_percentage_group = []
+    data_max_consec = []
+
+    #read file
+    with h5py.File(path, "r") as f:
+        for index in f.keys():
+
+            classes.append(f[index]['label'][...].item().decode('utf-8'))
+            videoName.append(f[index]['video_name'][...].item().decode('utf-8'))
+            data.append(f[index]["data"][...])
+            data_false_seq.append(np.array(f[index]['in_range_sequences']))
+            # numeros de secuencias de frames que no etan con missing
+            data_percentage_group.append(np.array(f[index]['percentage_group']))
+            data_max_consec.append(np.array(f[index]['max_percentage']))
+    
+
+
+    return classes, videoName, data, data_false_seq, data_percentage_group, data_max_consec
 
 
 def create_df(path):
@@ -66,3 +93,16 @@ def retrieve_h5_data_new_format(path):
     df = pd.DataFrame.from_dict(dataset)
     return df
 
+def create_csv_from_dictionaries(full_path, headers, dictionaries):
+
+    # create the csv and define the headers
+    with open(full_path, 'w', newline='', encoding='utf-8') as file:
+        writer = csv.writer(file)
+        writer.writerow(headers)
+
+        # write the acummulated data
+        for key in dictionaries[0].keys():
+            row = [key]
+            for d in dictionaries:
+                row.append(d[key])
+            writer.writerow(row)
