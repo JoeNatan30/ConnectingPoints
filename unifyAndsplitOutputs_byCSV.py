@@ -8,8 +8,6 @@ import numpy as np
 
 from utils import read_h5
 
-CLASS_NUM = 100
-
 class DataReader():
 
     def __init__(self, datasets, kpModel, output_path):
@@ -55,9 +53,9 @@ class DataReader():
                 self.data.pop(pos)
 
 
-    def generate_meaning_dict(self):
+    def generate_meaning_dict(self, words_dict):
 
-        meaning = {v:k for (k,v) in enumerate(set(self.classes))}
+        meaning = {v:k for (k,v) in words_dict.items()}
         self.labels = [meaning[_class] for _class in self.classes]
 
     def fixClasses(self):
@@ -94,6 +92,7 @@ class DataReader():
         print(len(set(class_tmp)))
         # set the path
         save_path = os.path.normpath(f"split/{self.output_path.split(os.sep)[1]}")
+        save_path = save_path.replace('$',str(len(set(class_tmp))))
         save_path = save_path.split('.')
 
         if train:
@@ -112,28 +111,26 @@ class DataReader():
             h5_file[grupo_name]['video_name'] = v # video name (str)
             h5_file[grupo_name]['label'] = c # classes (str)
             h5_file[grupo_name]['data'] = d # data (Matrix)
-            #h5_file[grupo_name]['class_number'] = l #label (int)
-            
+            h5_file[grupo_name]['class_number'] = l #label (int)
+
         h5_file.close()
 
 
     def splitDataset(self):
         
-        # To know the number of instance per clases
-        counter = Counter(self.classes)
-        print(counter)
-        # Select the words that have more or equal than 100 instances 
-        words = counter.most_common(CLASS_NUM)  
-        counter = [word for (word, count) in words]
+        df_words = pd.read_csv("./incrementalList.csv",encoding='latin1', header=None)
+
+        words = list(df_words[0])
+        print(len(words),len(words),len(words),len(words),len(words))
+
 
         print('#'*40)
     
         # Filter the data to have selected instances
-        self.selectClasses(counter)
+        self.selectClasses(words)
 
         # generate classes number to use it in stratified option
-        self.generate_meaning_dict()
-        print()
+        self.generate_meaning_dict(df_words.to_dict()[0])
 
         # split the data into Train and Val (but use list position as X to reorder)
         x_pos = range(len(self.labels))
@@ -152,7 +149,7 @@ dataset_out_name = '-'.join(dataset_out_name)
 
 print(f"procesing {datasets} - using {kpModel} ...")
 
-output_path = f"output/{dataset_out_name}--{CLASS_NUM}--{kpModel}.hdf5"
+output_path = f"output/{dataset_out_name}--$--incremental--{kpModel}.hdf5"
 
 dataReader = DataReader(datasets, kpModel, output_path)
 dataReader.fixClasses()
