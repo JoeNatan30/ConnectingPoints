@@ -24,9 +24,9 @@ def get_data():
     #          for _label in labels]
     # to change '' label to PeruSil standar '???'
     print(labels)
-    labels = [_label if _label != '' else '???' for _label in labels ]
+    #labels = [_label if _label != '' else '???' for _label in labels ]
 
-    labels = [_label if '-' in _label else _label.lower() for _label in labels ]
+    #labels = [_label if '-' in _label else _label for _label in labels ]
     
     # adding label column 
     video_list['label'] = labels

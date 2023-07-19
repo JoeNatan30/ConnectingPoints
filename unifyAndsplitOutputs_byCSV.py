@@ -21,6 +21,8 @@ class DataReader():
 
             path = os.path.normpath(f"output/{dataset}--{kpModel}.hdf5")
             classes, videoName, data = read_h5(path)
+            
+            classes = [_class.upper() for _class in classes]
 
             self.classes = self.classes + classes
             self.videoName = self.videoName + videoName
@@ -44,7 +46,7 @@ class DataReader():
         df_bannedWords = pd.read_csv("./bannedList.csv",encoding='latin1', header=None)
         bannedList = list(df_bannedWords[0])
 
-        bannedList = bannedList + [ban.lower() for ban in bannedList] + ['él','tú','','G-R']#+ ['lugar', 'qué?', 'sí', 'manejar', 'tú', 'ahí', 'dormir', 'cuatro', 'él', 'NNN'] #["hummm"]
+        bannedList = bannedList + [ban.upper() for ban in bannedList] + ['él','tú','','G-R']#+ ['lugar', 'qué?', 'sí', 'manejar', 'tú', 'ahí', 'dormir', 'cuatro', 'él', 'NNN'] #["hummm"]
 
         for pos in range(len(self.classes)-1, -1, -1):
             if self.classes[pos] in bannedList:
@@ -90,6 +92,7 @@ class DataReader():
         labels_tmp = [self.labels[pos] for pos in indexOrder]
         print(set(class_tmp))
         print(len(set(class_tmp)))
+
         # set the path
         save_path = os.path.normpath(f"split/{self.output_path.split(os.sep)[1]}")
         save_path = save_path.replace('$',str(len(set(class_tmp))))
@@ -115,19 +118,20 @@ class DataReader():
 
         h5_file.close()
 
-
     def splitDataset(self):
-        
-        df_words = pd.read_csv("./incrementalList.csv",encoding='latin1', header=None)
 
+        df_words = pd.read_csv("./incrementalList.csv",encoding='utf-8', header=None)
+        print(df_words[0])
         words = list(df_words[0])
         print(len(words),len(words),len(words),len(words),len(words))
-
 
         print('#'*40)
     
         # Filter the data to have selected instances
         self.selectClasses(words)
+        counter = Counter(self.classes)
+        print(counter)
+        print(len(counter))
 
         # generate classes number to use it in stratified option
         self.generate_meaning_dict(df_words.to_dict()[0])
@@ -135,14 +139,13 @@ class DataReader():
         # split the data into Train and Val (but use list position as X to reorder)
         x_pos = range(len(self.labels))
         pos_train, pos_val, y_train, y_val = train_test_split(x_pos, self.labels, train_size=0.8 , random_state=32, stratify=self.labels)
-        
+
         # save the data
         self.saveData(pos_train,train=True)
         self.saveData(pos_val, train=False)
 
-    
 kpModel = "mediapipe"
-datasets = ["PUCP_PSL_DGI305"] #["AEC", "PUCP_PSL_DGI156", "PUCP_PSL_DGI305", "WLASL", "AUTSL"]
+datasets = ["AEC", "PUCP_PSL_DGI305"] #["AEC", "PUCP_PSL_DGI156", "PUCP_PSL_DGI305", "WLASL", "AUTSL"]
 
 dataset_out_name = [dataset if len(dataset)<6 else dataset[-6:] for dataset in datasets]
 dataset_out_name = '-'.join(dataset_out_name)

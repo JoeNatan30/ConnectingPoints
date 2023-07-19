@@ -130,7 +130,8 @@ class DataReader():
     
         # Filter the data to have selected instances
         self.selectClasses(counter)
-
+        counter = Counter(self.classes)
+        print(*dict(counter).keys())
         # generate classes number to use it in stratified option
         self.generate_meaning_dict()
         print()
