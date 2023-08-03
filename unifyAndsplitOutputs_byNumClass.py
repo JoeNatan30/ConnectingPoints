@@ -8,7 +8,7 @@ import numpy as np
 
 from utils import read_h5
 
-CLASS_NUM = 100
+CLASS_NUM = 50
 
 class DataReader():
 
@@ -46,7 +46,7 @@ class DataReader():
         df_bannedWords = pd.read_csv("./bannedList.csv",encoding='latin1', header=None)
         bannedList = list(df_bannedWords[0])
 
-        bannedList = bannedList + [ban.lower() for ban in bannedList] + ['él','tú','','G-R']#+ ['lugar', 'qué?', 'sí', 'manejar', 'tú', 'ahí', 'dormir', 'cuatro', 'él', 'NNN'] #["hummm"]
+        bannedList = bannedList + [ban.upper() for ban in bannedList] + ['ÉL','TÚ','','G-R'] + ['LUGAR', 'QUÉ?', 'SÍ', 'MANEJAR', 'TÚ', 'AHÍ', 'DORMIR', 'CUATRO', 'ÉL', 'NNN'] #["hummm"]
 
         for pos in range(len(self.classes)-1, -1, -1):
             if self.classes[pos] in bannedList:
@@ -146,7 +146,7 @@ class DataReader():
 
     
 kpModel = "mediapipe"
-datasets = ["PUCP_PSL_DGI305"] #["AEC", "PUCP_PSL_DGI156", "PUCP_PSL_DGI305", "WLASL", "AUTSL"]
+datasets = ["PUCP_PSL_DGI305", "AEC"] #["AEC", "PUCP_PSL_DGI156", "PUCP_PSL_DGI305", "WLASL", "AUTSL"]
 
 dataset_out_name = [dataset if len(dataset)<6 else dataset[-6:] for dataset in datasets]
 dataset_out_name = '-'.join(dataset_out_name)

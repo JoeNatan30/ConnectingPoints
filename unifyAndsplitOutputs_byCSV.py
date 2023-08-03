@@ -8,6 +8,9 @@ import numpy as np
 
 from utils import read_h5
 
+version = 1
+maxIntancesPerClass = 20
+
 class DataReader():
 
     def __init__(self, datasets, kpModel, output_path):
@@ -54,6 +57,23 @@ class DataReader():
                 self.videoName.pop(pos)
                 self.data.pop(pos)
 
+    def limitIntancesPerClass(self):
+        
+        dict_class = {_class:[] for _class in set(self.classes)}
+
+        for pos, _class in enumerate(self.classes):
+            dict_class[_class].append(pos)
+
+        for _class in set(self.classes):
+            dict_class[_class] = dict_class[_class][:maxIntancesPerClass]
+
+        ind_list = [ind for values in dict_class.values() for ind in values]
+
+        for pos in range(len(self.classes)-1, -1, -1):
+            if pos not in ind_list:
+                self.classes.pop(pos)
+                self.videoName.pop(pos)
+                self.data.pop(pos)
 
     def generate_meaning_dict(self, words_dict):
 
@@ -120,7 +140,7 @@ class DataReader():
 
     def splitDataset(self):
 
-        df_words = pd.read_csv("./incrementalList.csv",encoding='utf-8', header=None)
+        df_words = pd.read_csv(f"./incrementalList_V{version}.csv",encoding='utf-8', header=None)
         print(df_words[0])
         words = list(df_words[0])
         print(len(words),len(words),len(words),len(words),len(words))
@@ -129,6 +149,8 @@ class DataReader():
     
         # Filter the data to have selected instances
         self.selectClasses(words)
+
+        self.limitIntancesPerClass()
         counter = Counter(self.classes)
         print(counter)
         print(len(counter))
@@ -145,7 +167,7 @@ class DataReader():
         self.saveData(pos_val, train=False)
 
 kpModel = "mediapipe"
-datasets = ["AEC", "PUCP_PSL_DGI305"] #["AEC", "PUCP_PSL_DGI156", "PUCP_PSL_DGI305", "WLASL", "AUTSL"]
+datasets = ["PUCP_PSL_DGI305", "AEC"] #["AEC", "PUCP_PSL_DGI156", "PUCP_PSL_DGI305", "WLASL", "AUTSL"]
 
 dataset_out_name = [dataset if len(dataset)<6 else dataset[-6:] for dataset in datasets]
 dataset_out_name = '-'.join(dataset_out_name)
