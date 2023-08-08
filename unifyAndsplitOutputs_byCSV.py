@@ -9,7 +9,7 @@ import numpy as np
 from utils import read_h5
 
 version = 1
-maxIntancesPerClass = 20
+maxIntancesPerClass = 45
 
 class DataReader():
 
@@ -110,8 +110,12 @@ class DataReader():
         videoName_tmp = [self.videoName[pos] for pos in indexOrder]
         data_tmp = [self.data[pos] for pos in indexOrder]
         labels_tmp = [self.labels[pos] for pos in indexOrder]
-        print(set(class_tmp))
-        print(len(set(class_tmp)))
+
+        counter = Counter(class_tmp)
+        print(counter)
+        print(len(counter))
+        #print(set(class_tmp))
+        print("Number of classes:", len(set(class_tmp)))
 
         # set the path
         save_path = os.path.normpath(f"split/{self.output_path.split(os.sep)[1]}")
@@ -151,9 +155,6 @@ class DataReader():
         self.selectClasses(words)
 
         self.limitIntancesPerClass()
-        counter = Counter(self.classes)
-        print(counter)
-        print(len(counter))
 
         # generate classes number to use it in stratified option
         self.generate_meaning_dict(df_words.to_dict()[0])
@@ -174,7 +175,7 @@ dataset_out_name = '-'.join(dataset_out_name)
 
 print(f"procesing {datasets} - using {kpModel} ...")
 
-output_path = f"output/{dataset_out_name}--$--incremental--{kpModel}.hdf5"
+output_path = f"output/{dataset_out_name}--$--incremental--{kpModel}--V{version}.hdf5"
 
 dataReader = DataReader(datasets, kpModel, output_path)
 dataReader.fixClasses()
