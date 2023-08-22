@@ -114,3 +114,11 @@ Select the dataset you want to mix (or to process isolated)
 And then, select the keypoint estimator model (only one per run)
 
 The output will be in "output" folder.
+
+# Have you already preprocessed the keypoints?
+
+If your preprocessed data is organized with each instance in its respective file, you can utilize the following script
+```
+python data_reorganization.py
+```
+You just need to provide the path to the respective folder that contains all the files.
