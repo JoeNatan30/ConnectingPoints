@@ -144,7 +144,7 @@ class DataReader():
 
     def splitDataset(self):
 
-        df_words = pd.read_csv(f"./incrementalList_V{version}.csv",encoding='utf-8', header=None)
+        df_words = pd.read_csv(f"./incrementalList.csv",encoding='utf-8', header=None)
         print(df_words[0])
         words = list(df_words[0])
         print(len(words),len(words),len(words),len(words),len(words))
@@ -175,7 +175,7 @@ dataset_out_name = '-'.join(dataset_out_name)
 
 print(f"procesing {datasets} - using {kpModel} ...")
 
-output_path = f"output/{dataset_out_name}--$--incremental--{kpModel}--V{version}.hdf5"
+output_path = f"output/{dataset_out_name}--$--incremental--{kpModel}.hdf5"
 
 dataReader = DataReader(datasets, kpModel, output_path)
 dataReader.fixClasses()
