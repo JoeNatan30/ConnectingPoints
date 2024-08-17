@@ -100,6 +100,76 @@ def partial_save(output, partial_output_name, estimator):
     os.makedirs("./output", exist_ok=True)
     output.to_pickle('./output/'+name+'.pk')
 
+# def get_h5_last_position(h5_file):
+#     groups = list(h5_file.keys())
+#     posiciones = [int(nombre) for nombre in groups]
+#     return max(posiciones)
+
+def backup_data(file, backup):
+    print("generating dataset backup...")
+    groups = list(backup.keys())
+
+    for group_name in groups:
+        _data = backup[group_name]
+
+        file.create_group(group_name)
+        file[group_name]['video_name'] = _data['video_name'][...].item().decode('utf-8')
+        file[group_name]['label'] = _data['label'][...].item()
+        file[group_name]['data'] = _data["data"][...]
+    
+    backup.close()
+
+    return [int(nombre) for nombre in groups] if groups != None else []
+
+def initialize_h5_file(save_path):
+    """Inicializa el archivo H5 dependiendo de su existencia y la respuesta del usuario."""
+
+    # If its a new file
+    if not os.path.exists(save_path):
+        print("Creating a new H5 file...")
+        h5_file = h5py.File(save_path, 'w')
+    
+        return h5_file, 0
+    
+    else:
+        # Ask for continue processing
+        #answer = cs.select_continue_processing()
+
+        save_path_old = f"{'.'.join(save_path.split('.')[:-1])}_old.hdf5"
+    
+        os.replace(save_path, save_path_old)
+
+        h5_file_old = h5py.File(save_path_old, "r")
+        h5_file = h5py.File(save_path, "w")
+
+        positions_list = backup_data(h5_file, h5_file_old)
+
+        if len(positions_list) == 0:
+            last_position = 0
+        else:
+            last_position = max(positions_list)
+
+        return h5_file, last_position
+    
+def save_data_h5(h5_file, num, path, dataset_name, kp_list, label):
+
+    grupo_name = f"{num}"
+    h5_file.create_group(grupo_name)
+    # TODO hacer que se devuelva el valor de todo el path desde la carpeta del dataset
+    h5_file[grupo_name]['video_name'] = path #.split(dataset_name[0])[-1][1:]
+    h5_file[grupo_name]['label'] = label
+    h5_file[grupo_name]['data'] = np.asarray(kp_list)
+
+def select_keypoint_estimator(kp_est_chosed):
+    
+    if "openpose" == kp_est_chosed:
+        keypoint_estimator = openpose_functions
+    elif "mediapipe" == kp_est_chosed:
+        keypoint_estimator = mediapipe_functions
+    elif "wholepose" == kp_est_chosed:
+        keypoint_estimator = wholepose_functions
+    
+    return keypoint_estimator
 
 def get_keypoint_estimator_standarized_output(kpoint_est_opt, data, partial_output_name):
 
@@ -109,24 +179,25 @@ def get_keypoint_estimator_standarized_output(kpoint_est_opt, data, partial_outp
 
     # Select keypoint stimator
     kp_est_chosed = kpoint_est_opt[0]
-    if "openpose" == kp_est_chosed:
-        keypoint_estimator = openpose_functions
-    elif "mediapipe" == kp_est_chosed:
-        keypoint_estimator = mediapipe_functions
-    elif "wholepose" == kp_est_chosed:
-        keypoint_estimator = wholepose_functions 
+    keypoint_estimator = select_keypoint_estimator(kp_est_chosed)
+
+    save_path = f"./output/{partial_output_name}--{kp_est_chosed}.hdf5"
+
+    # if the H5 file exists
+    h5_file, last_position = initialize_h5_file(save_path)
 
     # initilize the model
     model = keypoint_estimator.model_init()
  
     num = 0
 
-    save_path = f"./output/{partial_output_name}--{kp_est_chosed}.hdf5"
-
-    h5_file = h5py.File(save_path, 'w')
-
     # For each video (path)
     for path, label in zip(data['video_path'], data['label']):
+
+        if num <= last_position and last_position != 0:
+            print(f"already processed video: {num}")
+            num = num + 1
+            continue
 
         # Where the video is processed
         kp_list = get_keypoint_from_estimator(path, label, model, kp_est_chosed, keypoint_estimator)
@@ -136,12 +207,7 @@ def get_keypoint_estimator_standarized_output(kpoint_est_opt, data, partial_outp
             continue
 
         # accumulate data
-        grupo_name = f"{num}"
-        h5_file.create_group(grupo_name)
-        # TODO hacer que se devuelva el valor de todo el path desde la carpeta del dataset
-        h5_file[grupo_name]['video_name'] = path.split(dataset_name[0])[-1][1:]
-        h5_file[grupo_name]['label'] = label
-        h5_file[grupo_name]['data'] = np.asarray(kp_list)
+        save_data_h5(h5_file, num, path, dataset_name, kp_list, label)
 
         num = num + 1
         print(f"Video processed: {num}")
